@@ -4,8 +4,17 @@
 #   offset 0  : name
 #   offset 8  : value
 #   offset 16 : next
+
 sum:
-    retq
+    xorq %rax, %rax
+.Lsum_loop:
+    testq  %rdi, %rdi       #while (ptr != NULL)
+    je.    .Lsum_done
+    addq   8(%rdi), %rax    #total += ptr->value
+    movq   16(%rdi), %rdi   #ptr = ptr->next
+    jmp    .Lsum_loop
+.Lsum_done:
+    retq    #return total (in %rax)
 
 
 # sum of the elements of a linkedlist in C

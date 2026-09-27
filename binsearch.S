@@ -1,6 +1,30 @@
 .global binsearch
 # arr in %rdi, n in %esi, target in %edx
 binsearch:
+  xorl    %ecx, %ecx   #lo = 0
+  movl    %esi, %r8d
+  decl    %r8d         #hi = (int)n - 1
+.Lbs_loop:
+  cmpl    %r8d, %ecx        #while (lo <= hi)
+  jg      .Lbs_notfound
+  movl    %r8d, %eax
+  subl    %ecx, %eax           #eax = hi - lo  
+  sarl    $1, %eax             #eax = (hi - lo) / 2
+  addl    %ecx, %eax           #mid = lo + (hi - lo) / 2
+  movslq  %eax, %r9
+  movl    (%rdi,%r9,4), %r10d  #r10d = arr[mid]
+  cmpl    %edx, %r10d
+  je      .Lbs_found       #arr[mid] == target
+  jl      .Lbs_right       #arr[mid] < target
+  leal    -1(%eax), %r8d   #else hi = mid - 1
+  jmp     .Lbs_loop
+.Lbs_right:
+  leal    1(%eax), %ecx    #lo = mid + 1
+  jmp     .Lbs_loop
+.Lbs_found:
+  ret
+.Lbs_notfound:
+  movl    $-1, %eax   #return -1
   ret
 
 

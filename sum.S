@@ -9,7 +9,7 @@ sum:
     xorq %rax, %rax
 .Lsum_loop:
     testq  %rdi, %rdi       #while (ptr != NULL)
-    je.    .Lsum_done
+    je    .Lsum_done
     addq   8(%rdi), %rax    #total += ptr->value
     movq   16(%rdi), %rdi   #ptr = ptr->next
     jmp    .Lsum_loop
